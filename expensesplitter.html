@@ -3,768 +3,294 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expense Splitter System</title>
+    <title>Expense Splitter</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1, h2 {
             color: #333;
         }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .header {
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
-            animation: fadeInDown 1s ease-out;
-        }
-
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .header p {
-            font-size: 1.1em;
-            opacity: 0.9;
-        }
-
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-
         .card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
-        }
-
-        .card h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-            font-size: 1.5em;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 10px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-        }
-
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 10px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-right: 10px;
-            margin-bottom: 10px;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
-
-        .participants-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .participant-tag {
-            background: #667eea;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .remove-participant {
-            background: rgba(255,255,255,0.3);
-            border: none;
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        .full-width {
-            grid-column: 1 / -1;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: white;
             padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-
-        .stat-value {
-            font-size: 2em;
-            font-weight: bold;
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
             margin-bottom: 5px;
         }
-
-        .stat-label {
-            font-size: 0.9em;
-            opacity: 0.9;
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
-
-        .balance-list, .expense-list, .transaction-list {
-            max-height: 300px;
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .participants {
+            margin-top: 10px;
+        }
+        .participant-tag {
+            background: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin-right: 5px;
+            display: inline-block;
+        }
+        .list {
+            max-height: 200px;
             overflow-y: auto;
-            border: 1px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 15px;
-            background: #f9f9f9;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 4px;
         }
-
-        .balance-item, .expense-item, .transaction-item {
-            padding: 12px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .list-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
         }
-
-        .balance-item.positive {
-            background: #e8f5e8;
-            border-left: 4px solid #4caf50;
-        }
-
-        .balance-item.negative {
-            background: #ffeaea;
-            border-left: 4px solid #f44336;
-        }
-
-        .balance-item.zero {
-            background: #f0f0f0;
-            border-left: 4px solid #999;
-        }
-
-        .expense-item {
-            background: #fff;
-            border: 1px solid #e0e0e0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .transaction-item {
-            background: #e3f2fd;
-            border-left: 4px solid #2196f3;
-        }
-
-        .amount {
-            font-weight: bold;
-            font-size: 1.1em;
-        }
-
-        .amount.positive {
-            color: #4caf50;
-        }
-
-        .amount.negative {
-            color: #f44336;
-        }
-
+        .positive { color: green; }
+        .negative { color: red; }
         .notification {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 20px;
-            border-radius: 10px;
+            top: 10px;
+            right: 10px;
+            padding: 10px;
+            background: #28a745;
             color: white;
-            font-weight: bold;
-            z-index: 1000;
-            animation: slideIn 0.3s ease-out;
+            border-radius: 4px;
         }
-
-        .notification.success {
-            background: #4caf50;
-        }
-
         .notification.error {
-            background: #f44336;
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .header h1 {
-                font-size: 2em;
-            }
-            
-            .stats-grid {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            }
-        }
-
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            background: #dc3545;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>💰 Expense Splitter System</h1>
-            <p>Smart expense management with DSA-powered optimization</p>
+        <h1>Expense Splitter</h1>
+        <div class="card">
+            <h2>Add Person</h2>
+            <div class="form-group">
+                <label for="personName">Name</label>
+                <input type="text" id="personName" placeholder="Enter name">
+            </div>
+            <button onclick="addPerson()">Add Person</button>
         </div>
-
-        <div class="main-content">
-            <!-- Add Person Card -->
-            <div class="card">
-                <h2>👥 Add Person</h2>
-                <div class="form-group">
-                    <label for="personName">Person Name</label>
-                    <input type="text" id="personName" placeholder="Enter person's name">
-                </div>
-                <button class="btn" onclick="addPerson()">Add Person</button>
+        <div class="card">
+            <h2>Add Expense</h2>
+            <div class="form-group">
+                <label for="expenseDesc">Description</label>
+                <input type="text" id="expenseDesc" placeholder="e.g., Dinner">
             </div>
-
-            <!-- Add Expense Card -->
-            <div class="card">
-                <h2>💳 Add Expense</h2>
-                <div class="form-group">
-                    <label for="expenseDesc">Description</label>
-                    <input type="text" id="expenseDesc" placeholder="Dinner, Movie, etc.">
-                </div>
-                <div class="form-group">
-                    <label for="expenseAmount">Amount ($)</label>
-                    <input type="number" id="expenseAmount" step="0.01" placeholder="0.00">
-                </div>
-                <div class="form-group">
-                    <label for="expensePayer">Paid By</label>
-                    <select id="expensePayer">
-                        <option value="">Select payer</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="participantSelect">Add Participants</label>
-                    <select id="participantSelect">
-                        <option value="">Select participant</option>
-                    </select>
-                    <button class="btn btn-secondary" onclick="addParticipant()">Add</button>
-                </div>
-                <div class="participants-container" id="participantsContainer"></div>
-                <button class="btn" onclick="addExpense()">Add Expense</button>
+            <div class="form-group">
+                <label for="expenseAmount">Amount ($)</label>
+                <input type="number" id="expenseAmount" step="0.01" placeholder="0.00">
             </div>
-
-            <!-- Statistics Card -->
-            <div class="card full-width">
-                <h2>📊 Statistics</h2>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-value" id="totalExpenses">$0.00</div>
-                        <div class="stat-label">Total Expenses</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="totalPeople">0</div>
-                        <div class="stat-label">Total People</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="avgExpense">$0.00</div>
-                        <div class="stat-label">Average Expense</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="topSpender">-</div>
-                        <div class="stat-label">Top Spender</div>
-                    </div>
-                </div>
+            <div class="form-group">
+                <label for="expensePayer">Paid By</label>
+                <select id="expensePayer">
+                    <option value="">Select payer</option>
+                </select>
             </div>
-
-            <!-- Balances Card -->
-            <div class="card">
-                <h2>⚖️ Current Balances</h2>
-                <div class="balance-list" id="balancesList">
-                    <p>No people added yet.</p>
-                </div>
+            <div class="form-group">
+                <label for="participantSelect">Participants</label>
+                <select id="participantSelect">
+                    <option value="">Select participant</option>
+                </select>
+                <button onclick="addParticipant()">Add</button>
+                <div class="participants" id="participants"></div>
             </div>
-
-            <!-- Expense History Card -->
-            <div class="card">
-                <h2>📝 Expense History</h2>
-                <div class="expense-list" id="expensesList">
-                    <p>No expenses recorded yet.</p>
-                </div>
-            </div>
-
-            <!-- Debt Settlement Card -->
-            <div class="card full-width">
-                <h2>🤝 Debt Settlement</h2>
-                <button class="btn btn-success" onclick="settleDebts()">Calculate Minimum Transactions</button>
-                <div class="transaction-list" id="transactionsList">
-                    <p>Click "Calculate Minimum Transactions" to see settlement plan.</p>
-                </div>
-            </div>
+            <button onclick="addExpense()">Add Expense</button>
+        </div>
+        <div class="card">
+            <h2>Balances</h2>
+            <div class="list" id="balancesList">No people added.</div>
+        </div>
+        <div class="card">
+            <h2>Expenses</h2>
+            <div class="list" id="expensesList">No expenses recorded.</div>
+        </div>
+        <div class="card">
+            <h2>Debt Settlement</h2>
+            <button onclick="settleDebts()">Settle Debts</button>
+            <div class="list" id="transactionsList">Click "Settle Debts" to view.</div>
         </div>
     </div>
 
     <script>
-        // Expense Splitter System - JavaScript Implementation
         class ExpenseSplitter {
             constructor() {
                 this.people = new Map();
                 this.expenses = [];
-                this.selectedParticipants = [];
+                this.participants = [];
             }
 
             addPerson(name) {
-                if (this.people.has(name)) {
-                    throw new Error(`Person '${name}' already exists`);
-                }
-                this.people.set(name, { name: name, balance: 0.0 });
+                if (this.people.has(name)) throw new Error(`Person '${name}' already exists`);
+                this.people.set(name, { name, balance: 0 });
                 this.updateDropdowns();
-                return true;
             }
 
             addExpense(description, amount, paidBy, participants) {
-                if (!this.people.has(paidBy)) {
-                    throw new Error(`Payer '${paidBy}' not found`);
-                }
-
-                for (const participant of participants) {
-                    if (!this.people.has(participant)) {
-                        throw new Error(`Participant '${participant}' not found`);
-                    }
-                }
-
-                const splitAmount = amount / participants.length;
-                
-                // Update balances
-                this.people.get(paidBy).balance += amount;
-                
-                for (const participant of participants) {
-                    this.people.get(participant).balance -= splitAmount;
-                }
-
-                // Store expense
-                this.expenses.push({
-                    description: description,
-                    amount: amount,
-                    paidBy: paidBy,
-                    participants: [...participants],
-                    date: new Date()
+                if (!this.people.has(paidBy)) throw new Error(`Payer '${paidBy}' not found`);
+                participants.forEach(p => {
+                    if (!this.people.has(p)) throw new Error(`Participant '${p}' not found`);
                 });
-
-                return true;
+                const splitAmount = amount / participants.length;
+                this.people.get(paidBy).balance += amount;
+                participants.forEach(p => this.people.get(p).balance -= splitAmount);
+                this.expenses.push({ description, amount, paidBy, participants: [...participants] });
             }
 
-            minimizeTransactions() {
+            settleDebts() {
                 const transactions = [];
-                const balances = [];
-
-                // Create array of balances
-                for (const [name, person] of this.people) {
-                    if (Math.abs(person.balance) > 0.01) {
-                        balances.push({ name: name, balance: person.balance });
-                    }
-                }
-
-                // Sort by balance (descending)
-                balances.sort((a, b) => b.balance - a.balance);
-
-                let i = 0;
-                let j = balances.length - 1;
-
+                const balances = Array.from(this.people.entries())
+                    .map(([name, { balance }]) => ({ name, balance }))
+                    .filter(b => Math.abs(b.balance) > 0.01)
+                    .sort((a, b) => b.balance - a.balance);
+                let i = 0, j = balances.length - 1;
                 while (i < j) {
                     const creditor = balances[i];
                     const debtor = balances[j];
-
-                    const settleAmount = Math.min(creditor.balance, Math.abs(debtor.balance));
-                    
-                    if (settleAmount > 0.01) {
-                        transactions.push({
-                            from: debtor.name,
-                            to: creditor.name,
-                            amount: settleAmount
-                        });
-
-                        creditor.balance -= settleAmount;
-                        debtor.balance += settleAmount;
+                    const amount = Math.min(creditor.balance, -debtor.balance);
+                    if (amount > 0.01) {
+                        transactions.push({ from: debtor.name, to: creditor.name, amount });
+                        creditor.balance -= amount;
+                        debtor.balance += amount;
                     }
-
-                    if (Math.abs(creditor.balance) < 0.01) i++;
-                    if (Math.abs(debtor.balance) < 0.01) j--;
+                    if (creditor.balance < 0.01) i++;
+                    if (debtor.balance > -0.01) j--;
                 }
-
                 return transactions;
-            }
-
-            getStatistics() {
-                const totalExpenses = this.expenses.reduce((sum, exp) => sum + exp.amount, 0);
-                const totalPeople = this.people.size;
-                const avgExpense = this.expenses.length > 0 ? totalExpenses / this.expenses.length : 0;
-                
-                const spenderMap = new Map();
-                for (const exp of this.expenses) {
-                    spenderMap.set(exp.paidBy, (spenderMap.get(exp.paidBy) || 0) + exp.amount);
-                }
-
-                let topSpender = '-';
-                let maxSpent = 0;
-                for (const [name, amount] of spenderMap) {
-                    if (amount > maxSpent) {
-                        maxSpent = amount;
-                        topSpender = name;
-                    }
-                }
-
-                return {
-                    totalExpenses: totalExpenses,
-                    totalPeople: totalPeople,
-                    avgExpense: avgExpense,
-                    topSpender: topSpender
-                };
             }
 
             updateDropdowns() {
                 const payerSelect = document.getElementById('expensePayer');
                 const participantSelect = document.getElementById('participantSelect');
-                
-                // Clear existing options
                 payerSelect.innerHTML = '<option value="">Select payer</option>';
                 participantSelect.innerHTML = '<option value="">Select participant</option>';
-
-                // Add people to dropdowns
-                for (const [name, person] of this.people) {
-                    const option1 = document.createElement('option');
-                    option1.value = name;
-                    option1.textContent = name;
-                    payerSelect.appendChild(option1);
-
-                    const option2 = document.createElement('option');
-                    option2.value = name;
-                    option2.textContent = name;
-                    participantSelect.appendChild(option2);
-                }
+                this.people.forEach((_, name) => {
+                    payerSelect.innerHTML += `<option value="${name}">${name}</option>`;
+                    participantSelect.innerHTML += `<option value="${name}">${name}</option>`;
+                });
             }
         }
 
-        // Global instance
         const splitter = new ExpenseSplitter();
 
-        // UI Functions
-        function showNotification(message, type = 'success') {
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.textContent = message;
-            document.body.appendChild(notification);
-
-            setTimeout(() => {
-                notification.remove();
-            }, 3000);
+        function showNotification(message, isError = false) {
+            const div = document.createElement('div');
+            div.className = `notification ${isError ? 'error' : ''}`;
+            div.textContent = message;
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 3000);
         }
 
         function addPerson() {
-            const nameInput = document.getElementById('personName');
-            const name = nameInput.value.trim();
-
-            if (!name) {
-                showNotification('Please enter a person name', 'error');
-                return;
-            }
-
+            const name = document.getElementById('personName').value.trim();
+            if (!name) return showNotification('Enter a name', true);
             try {
                 splitter.addPerson(name);
-                nameInput.value = '';
+                document.getElementById('personName').value = '';
                 updateUI();
-                showNotification(`Person '${name}' added successfully!`);
-            } catch (error) {
-                showNotification(error.message, 'error');
+                showNotification(`Added ${name}`);
+            } catch (e) {
+                showNotification(e.message, true);
             }
         }
 
         function addParticipant() {
-            const select = document.getElementById('participantSelect');
-            const name = select.value;
-
-            if (!name) {
-                showNotification('Please select a participant', 'error');
-                return;
-            }
-
-            if (splitter.selectedParticipants.includes(name)) {
-                showNotification('Participant already added', 'error');
-                return;
-            }
-
-            splitter.selectedParticipants.push(name);
-            updateParticipantsDisplay();
-            select.value = '';
+            const name = document.getElementById('participantSelect').value;
+            if (!name) return showNotification('Select a participant', true);
+            if (splitter.participants.includes(name)) return showNotification('Participant already added', true);
+            splitter.participants.push(name);
+            updateParticipants();
+            document.getElementById('participantSelect').value = '';
         }
 
         function removeParticipant(name) {
-            splitter.selectedParticipants = splitter.selectedParticipants.filter(p => p !== name);
-            updateParticipantsDisplay();
+            splitter.participants = splitter.participants.filter(p => p !== name);
+            updateParticipants();
         }
 
-        function updateParticipantsDisplay() {
-            const container = document.getElementById('participantsContainer');
-            container.innerHTML = '';
-
-            for (const participant of splitter.selectedParticipants) {
-                const tag = document.createElement('div');
-                tag.className = 'participant-tag';
-                tag.innerHTML = `
-                    ${participant}
-                    <button class="remove-participant" onclick="removeParticipant('${participant}')">×</button>
-                `;
-                container.appendChild(tag);
-            }
+        function updateParticipants() {
+            const container = document.getElementById('participants');
+            container.innerHTML = splitter.participants.map(p => `
+                <span class="participant-tag">${p} <button onclick="removeParticipant('${p}')">×</button></span>
+            `).join('');
         }
 
         function addExpense() {
-            const description = document.getElementById('expenseDesc').value.trim();
+            const desc = document.getElementById('expenseDesc').value.trim();
             const amount = parseFloat(document.getElementById('expenseAmount').value);
             const paidBy = document.getElementById('expensePayer').value;
-            const participants = [...splitter.selectedParticipants];
-
-            if (!description) {
-                showNotification('Please enter expense description', 'error');
-                return;
-            }
-
-            if (!amount || amount <= 0) {
-                showNotification('Please enter a valid amount', 'error');
-                return;
-            }
-
-            if (!paidBy) {
-                showNotification('Please select who paid', 'error');
-                return;
-            }
-
-            if (participants.length === 0) {
-                showNotification('Please add at least one participant', 'error');
-                return;
-            }
-
+            if (!desc) return showNotification('Enter description', true);
+            if (!amount || amount <= 0) return showNotification('Enter valid amount', true);
+            if (!paidBy) return showNotification('Select payer', true);
+            if (!splitter.participants.length) return showNotification('Add participants', true);
             try {
-                splitter.addExpense(description, amount, paidBy, participants);
-                
-                // Clear form
+                splitter.addExpense(desc, amount, paidBy, splitter.participants);
                 document.getElementById('expenseDesc').value = '';
                 document.getElementById('expenseAmount').value = '';
                 document.getElementById('expensePayer').value = '';
-                splitter.selectedParticipants = [];
-                updateParticipantsDisplay();
-                
+                splitter.participants = [];
+                updateParticipants();
                 updateUI();
-                showNotification(`Expense '${description}' added successfully!`);
-            } catch (error) {
-                showNotification(error.message, 'error');
+                showNotification('Expense added');
+            } catch (e) {
+                showNotification(e.message, true);
             }
         }
 
         function settleDebts() {
-            const transactions = splitter.minimizeTransactions();
+            const transactions = splitter.settleDebts();
             const container = document.getElementById('transactionsList');
-
-            if (transactions.length === 0) {
-                container.innerHTML = '<p>🎉 All debts are settled!</p>';
-                return;
-            }
-
-            container.innerHTML = `
-                <p><strong>Minimum ${transactions.length} transaction(s) needed:</strong></p>
-                ${transactions.map(t => `
-                    <div class="transaction-item">
-                        <span>${t.from} → ${t.to}</span>
-                        <span class="amount">$${t.amount.toFixed(2)}</span>
-                    </div>
-                `).join('')}
-            `;
+            container.innerHTML = transactions.length ? transactions.map(t => `
+                <div class="list-item">${t.from} → ${t.to}: $${t.amount.toFixed(2)}</div>
+            `).join('') : 'All debts settled!';
         }
 
         function updateUI() {
-            updateBalances();
-            updateExpenseHistory();
-            updateStatistics();
-        }
-
-        function updateBalances() {
-            const container = document.getElementById('balancesList');
-            
-            if (splitter.people.size === 0) {
-                container.innerHTML = '<p>No people added yet.</p>';
-                return;
-            }
-
-            const balances = Array.from(splitter.people.values()).sort((a, b) => b.balance - a.balance);
-            
-            container.innerHTML = balances.map(person => {
-                const balance = person.balance;
-                let className = 'zero';
-                if (balance > 0.01) className = 'positive';
-                else if (balance < -0.01) className = 'negative';
-
-                return `
-                    <div class="balance-item ${className}">
-                        <span>${person.name}</span>
-                        <span class="amount ${className}">$${balance.toFixed(2)}</span>
+            const balancesList = document.getElementById('balancesList');
+            balancesList.innerHTML = splitter.people.size ? Array.from(splitter.people.values())
+                .map(p => `
+                    <div class="list-item">
+                        ${p.name}: <span class="${p.balance > 0 ? 'positive' : p.balance < 0 ? 'negative' : ''}">
+                        $${p.balance.toFixed(2)}</span>
                     </div>
-                `;
-            }).join('');
-        }
+                `).join('') : 'No people added.';
 
-        function updateExpenseHistory() {
-            const container = document.getElementById('expensesList');
-            
-            if (splitter.expenses.length === 0) {
-                container.innerHTML = '<p>No expenses recorded yet.</p>';
-                return;
-            }
-
-            container.innerHTML = splitter.expenses.map((expense, index) => `
-                <div class="expense-item">
-                    <div>
-                        <strong>${expense.description}</strong><br>
-                        <small>Paid by: ${expense.paidBy} | Participants: ${expense.participants.join(', ')}</small>
-                    </div>
-                    <span class="amount">$${expense.amount.toFixed(2)}</span>
+            const expensesList = document.getElementById('expensesList');
+            expensesList.innerHTML = splitter.expenses.length ? splitter.expenses.map(e => `
+                <div class="list-item">
+                    ${e.description} ($${e.amount.toFixed(2)}) by ${e.paidBy} for ${e.participants.join(', ')}
                 </div>
-            `).join('');
+            `).join('') : 'No expenses recorded.';
         }
 
-        function updateStatistics() {
-            const stats = splitter.getStatistics();
-            
-            document.getElementById('totalExpenses').textContent = `$${stats.totalExpenses.toFixed(2)}`;
-            document.getElementById('totalPeople').textContent = stats.totalPeople;
-            document.getElementById('avgExpense').textContent = `$${stats.avgExpense.toFixed(2)}`;
-            document.getElementById('topSpender').textContent = stats.topSpender;
-        }
-
-        // Initialize UI
         updateUI();
-
-        // Add some sample data for demonstration
-        setTimeout(() => {
-            try {
-                splitter.addPerson('Alice');
-                splitter.addPerson('Bob');
-                splitter.addPerson('Charlie');
-                updateUI();
-            } catch (e) {
-                // Ignore errors for demo data
-            }
-        }, 1000);
     </script>
 </body>
 </html>
