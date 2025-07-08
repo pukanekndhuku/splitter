@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Splitter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .participants {
+            margin-top: 10px;
+        }
+        .participant-tag {
+            background: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin-right: 5px;
+            display: inline-block;
+        }
+        .list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .list-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .positive { color: green; }
+        .negative { color: red; }
+        .notification {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 10px;
+            background: #28a745;
+            color: white;
+            border-radius: 4px;
+        }
+        .notification.error {
+            background: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Expense Splitter</h1>
+        <div class="card">
+            <h2>Add Person</h2>
+            <div class="form-group">
+                <label for="personName">Name</label>
+                <input type="text" id="personName" placeholder="Enter name">
+            </div>
+            <button onclick="addPerson()">Add Person</button>
+        </div>
+        <div class="card">
+            <h2>Add Expense</h2>
+            <div class="form-group">
+                <label for="expenseDesc">Description</label>
+                <input type="text" id="expenseDesc" placeholder="e.g., Dinner">
+            </div>
+            <div class="form-group">
+                <label for="expenseAmount">Amount ($)</label>
+                <input type="number" id="expenseAmount" step="0.01" placeholder="0.00">
+            </div>
+            <div class="form-group">
+                <label for="expensePayer">Paid By</label>
+                <select id="expensePayer">
+                    <option value="">Select payer</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="participantSelect">Participants</label>
+                <select id="participantSelect">
+                    <option value="">Select participant</option>
+                </select>
+                <button onclick="addParticipant()">Add</button>
+                <div class="participants" id="participants"></div>
+            </div>
+            <button onclick="addExpense()">Add Expense</button>
+        </div>
+        <div class="card">
+            <h2>Balances</h2>
+            <div class="list" id="balancesList">No people added.</div>
+        </div>
+        <div class="card">
+            <h2>Expenses</h2>
+            <div class="list" id="expensesList">No expenses recorded.</div>
+        </div>
+        <div class="card">
+            <h2>Debt Settlement</h2>
+            <button onclick="settleDebts()">Settle Debts</button>
+            <div class="list" id="transactionsList">Click "Settle Debts" to view.</div>
+        </div>
+    </div>
+
+    <script>
+        class ExpenseSplitter {
+            constructor() {
+                this.people = new Map();
+                this.expenses = [];
+                this.participants = [];
+            }
+
+            addPerson(name) {
+                if (this.people.has(name)) throw new Error(`Person '${name}' already exists`);
+                this.people.set(name, { name, balance: 0 });
+                this.updateDropdowns();
+            }
+
+            addExpense(description, amount, paidBy, participants) {
+                if (!this.people.has(paidBy)) throw new Error(`Payer '${paidBy}' not found`);
+                participants.forEach(p => {
+                    if (!this.people.has(p)) throw new Error(`Participant '${p}' not found`);
+                });
+                const splitAmount = amount / participants.length;
+                this.people.get(paidBy).balance += amount;
+                participants.forEach(p => this.people.get(p).balance -= splitAmount);
+                this.expenses.push({ description, amount, paidBy, participants: [...participants] });
+            }
+
+            settleDebts() {
+                const transactions = [];
+                const balances = Array.from(this.people.entries())
+                    .map(([name, { balance }]) => ({ name, balance }))
+                    .filter(b => Math.abs(b.balance) > 0.01)
+                    .sort((a, b) => b.balance - a.balance);
+                let i = 0, j = balances.length - 1;
+                while (i < j) {
+                    const creditor = balances[i];
+                    const debtor = balances[j];
+                    const amount = Math.min(creditor.balance, -debtor.balance);
+                    if (amount > 0.01) {
+                        transactions.push({ from: debtor.name, to: creditor.name, amount });
+                        creditor.balance -= amount;
+                        debtor.balance += amount;
+                    }
+                    if (creditor.balance < 0.01) i++;
+                    if (debtor.balance > -0.01) j--;
+                }
+                return transactions;
+            }
+
+            updateDropdowns() {
+                const payerSelect = document.getElementById('expensePayer');
+                const participantSelect = document.getElementById('participantSelect');
+                payerSelect.innerHTML = '<option value="">Select payer</option>';
+                participantSelect.innerHTML = '<option value="">Select participant</option>';
+                this.people.forEach((_, name) => {
+                    payerSelect.innerHTML += `<option value="${name}">${name}</option>`;
+                    participantSelect.innerHTML += `<option value="${name}">${name}</option>`;
+                });
+            }
+        }
+
+        const splitter = new ExpenseSplitter();
+
+        function showNotification(message, isError = false) {
+            const div = document.createElement('div');
+            div.className = `notification ${isError ? 'error' : ''}`;
+            div.textContent = message;
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 3000);
+        }
+
+        function addPerson() {
+            const name = document.getElementById('personName').value.trim();
+            if (!name) return showNotification('Enter a name', true);
+            try {
+                splitter.addPerson(name);
+                document.getElementById('personName').value = '';
+                updateUI();
+                showNotification(`Added ${name}`);
+            } catch (e) {
+                showNotification(e.message, true);
+            }
+        }
+
+        function addParticipant() {
+            const name = document.getElementById('participantSelect').value;
+            if (!name) return showNotification('Select a participant', true);
+            if (splitter.participants.includes(name)) return showNotification('Participant already added', true);
+            splitter.participants.push(name);
+            updateParticipants();
+            document.getElementById('participantSelect').value = '';
+        }
+
+        function removeParticipant(name) {
+            splitter.participants = splitter.participants.filter(p => p !== name);
+            updateParticipants();
+        }
+
+        function updateParticipants() {
+            const container = document.getElementById('participants');
+            container.innerHTML = splitter.participants.map(p => `
+                <span class="participant-tag">${p} <button onclick="removeParticipant('${p}')">×</button></span>
+            `).join('');
+        }
+
+        function addExpense() {
+            const desc = document.getElementById('expenseDesc').value.trim();
+            const amount = parseFloat(document.getElementById('expenseAmount').value);
+            const paidBy = document.getElementById('expensePayer').value;
+            if (!desc) return showNotification('Enter description', true);
+            if (!amount || amount <= 0) return showNotification('Enter valid amount', true);
+            if (!paidBy) return showNotification('Select payer', true);
+            if (!splitter.participants.length) return showNotification('Add participants', true);
+            try {
+                splitter.addExpense(desc, amount, paidBy, splitter.participants);
+                document.getElementById('expenseDesc').value = '';
+                document.getElementById('expenseAmount').value = '';
+                document.getElementById('expensePayer').value = '';
+                splitter.participants = [];
+                updateParticipants();
+                updateUI();
+                showNotification('Expense added');
+            } catch (e) {
+                showNotification(e.message, true);
+            }
+        }
+
+        function settleDebts() {
+            const transactions = splitter.settleDebts();
+            const container = document.getElementById('transactionsList');
+            container.innerHTML = transactions.length ? transactions.map(t => `
+                <div class="list-item">${t.from} → ${t.to}: $${t.amount.toFixed(2)}</div>
+            `).join('') : 'All debts settled!';
+        }
+
+        function updateUI() {
+            const balancesList = document.getElementById('balancesList');
+            balancesList.innerHTML = splitter.people.size ? Array.from(splitter.people.values())
+                .map(p => `
+                    <div class="list-item">
+                        ${p.name}: <span class="${p.balance > 0 ? 'positive' : p.balance < 0 ? 'negative' : ''}">
+                        $${p.balance.toFixed(2)}</span>
+                    </div>
+                `).join('') : 'No people added.';
+
+            const expensesList = document.getElementById('expensesList');
+            expensesList.innerHTML = splitter.expenses.length ? splitter.expenses.map(e => `
+                <div class="list-item">
+                    ${e.description} ($${e.amount.toFixed(2)}) by ${e.paidBy} for ${e.participants.join(', ')}
+                </div>
+            `).join('') : 'No expenses recorded.';
+        }
+
+        updateUI();
+    </script>
+</body>
+</html>
